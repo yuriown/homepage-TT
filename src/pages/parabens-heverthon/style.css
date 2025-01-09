@@ -1,0 +1,51 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f3f3f3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  
+  .container {
+    text-align: center;
+  }
+  
+  button {
+    font-size: 20px;
+    padding: 15px 30px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #218838;
+  }
+  
+  #congrats-message {
+    margin-top: 20px;
+    font-size: 30px;
+    font-weight: bold;
+    color: #ff6347;
+    display: none;
+    animation: pop-up 0.5s ease-in-out;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  @keyframes pop-up {
+    0% {
+      transform: scale(0);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  

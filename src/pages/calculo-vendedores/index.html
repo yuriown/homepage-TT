@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadoras de Termoretrátil - Termotubos</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+</head>
+<body>
+    <!-- Cabeçalho -->
+    <header>
+        <h1>Termotubos</h1>
+        <p>Calculadoras - Vendedores</p>
+    </header>
+    
+    <div class="container">
+        <!-- Calculadora Barramento -->
+        <div class="calculator">
+            <h2>Calculadora de Barramento</h2>
+            <label for="largura">Largura (V):</label>
+            <input type="number" id="largura" step="0.01" placeholder="Digite a largura" required>
+            
+            <label>
+                <input type="checkbox" id="larguraDiferente" onchange="toggleLarguraExtra()"> Largura Diferente
+            </label>
+            <input type="number" id="larguraExtra" step="0.01" placeholder="Digite a segunda largura" class="extra-input">
+
+            <label for="altura">Altura (A):</label>
+            <input type="number" id="altura" step="0.01" placeholder="Digite a altura" required>
+
+            <label>
+                <input type="checkbox" id="alturaDiferente" onchange="toggleAlturaExtra()"> Altura Diferente
+            </label>
+            <input type="number" id="alturaExtra" step="0.01" placeholder="Digite a segunda altura" class="extra-input">
+
+            <label>
+                <input type="checkbox" id="curva90"> Barramento com curva de 90º
+            </label>
+
+            <button onclick="calcularBarramento()">Calcular Diâmetro</button>
+            <div class="result" id="resultadoBarramento"></div>
+        </div>
+
+        <!-- Calculadora Diâmetro de Valor Achatado -->
+        <div class="calculator">
+            <h2>Calculadora de Diâmetro para Valor Achatado</h2>
+            <label for="valorAchatado">Valor Achatado:</label>
+            <input type="number" id="valorAchatado" step="0.01" placeholder="Digite o valor achatado" required>
+
+            <button onclick="calcularValorAchatado()">Calcular Diâmetro</button>
+            <div class="result" id="resultadoValorAchatado"></div>
+        </div>
+    </div>
+
+    <!-- Rodapé -->
+    <footer>
+        <p>&copy; 2024 Termotubos - Todos os direitos reservados</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

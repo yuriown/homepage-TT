@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial de Cadastro na HubSpot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="tutorial-container">
+        <a href="../../../index.html"><button class="back-button" >&#8592; Voltar</button></a>
+        <div id="tutorial">
+            <div class="step" id="step1">
+                <h2>Etapa 1: Coletar Dados</h2>
+                <img src="img/info-contact.png" alt="Imagem Etapa 1">
+                <p>
+                    Após coletar as informações necessárias para o cadastro do cliente(CNPJ/E-Mail),
+                    você precisará criar um novo contato no HubSpot, acessando "Informações de Contato"
+                    como na imagem acima.
+                </p>
+                <button class="next-button" onclick="backStep()">Voltar</button>
+                <button class="next-button" onclick="nextStep()">Próximo</button>
+            </div>
+            <div class="step" id="step2" style="display: none;">
+                <img src="img/info-contact-number.png" alt="Imagem Etapa 2">
+                <h2>Etapa 2: Acesse a aba de Contatos</h2>
+                <p>Na barra lateral direita, após clicar em "Informações de Contato", verá o <span class="contact-name">nome do contato</span>,
+                    poderá editá-lo selecionando o ícone do lápis à esquerda.<br>
+                    Em seguida, pode acessar o <span class="contact-menu">menu do contato</span> clicando em "Ir para o Hubspot" que está marcado de roxo ao redor.<br>
+                </p>
+                <button class="next-button" onclick="backStep()">Voltar</button>
+                <button class="next-button" onclick="nextStep()">Próximo</button>
+            </div>
+            <div class="step" id="step3" style="display: none;">
+                <img src="img/info-contact-menu.png" alt="Imagem Etapa 3" class="img-menu">
+                <h2>Etapa 3: Adicionar informações do cliente.</h2>
+                <p>
+                    Ao abrir o menu do cliente, o primeiro passo é alterar o nome, o recomendado é colocar o <span class="contact-name-blue">nome do cliente</span> 
+                    e em seguida a empresa de onde ele fala, como no exemplo à cima.<br>
+                    Após isso, precisa inserir o especialista responsável pelo cliente, na propriedade "<span class="contact-name">Proprietário do contato</span>"<br>
+                    Para finalizar, terá que preencher com os dados da empresa, incluindo o CNPJ, pegando todas as informações diretamente do Tiny.
+                </p>
+                <button class="next-button" onclick="backStep()">Voltar</button>
+                <button class="finish-button" id="animate_confetti">Finalizar</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+</body>
+</html>

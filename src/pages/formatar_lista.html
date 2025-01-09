@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparar Listas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        .output {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+        .highlight {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Comparar Listas</h1>
+    <p>Insira as duas listas abaixo (separadas por vírgulas ou espaços):</p>
+    <label for="lista1">Lista 1:</label>
+    <textarea id="lista1" placeholder="Exemplo: 56505, 56512, 56521"></textarea>
+    <label for="lista2">Lista 2:</label>
+    <textarea id="lista2" placeholder="Exemplo: 56512, 56521, 56524"></textarea>
+    <button onclick="compararListas()">Comparar</button>
+
+    <div class="output" id="output"></div>
+
+    <script>
+        function compararListas() {
+            // Obter as duas listas
+            const lista1 = document.getElementById("lista1").value.split(/[\s,]+/).filter(item => item.trim());
+            const lista2 = document.getElementById("lista2").value.split(/[\s,]+/).filter(item => item.trim());
+
+            // Encontrar itens que estão em lista1, mas não em lista2
+            const apenasLista1 = lista1.filter(item => !lista2.includes(item));
+
+            // Encontrar itens que estão em lista2, mas não em lista1
+            const apenasLista2 = lista2.filter(item => !lista1.includes(item));
+
+            // Gerar a saída formatada
+            const outputDiv = document.getElementById("output");
+            outputDiv.innerHTML = `
+                <p><strong>Itens que estão apenas na Lista 1:</strong></p>
+                <p class="highlight">${apenasLista1.join(", ") || "Nenhum item"}</p>
+                <p><strong>Itens que estão apenas na Lista 2:</strong></p>
+                <p class="highlight">${apenasLista2.join(", ") || "Nenhum item"}</p>
+            `;
+        }
+    </script>
+</body>
+</html>

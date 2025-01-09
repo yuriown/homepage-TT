@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <header class="dashboard-header">
+            <h1>Sales Dashboard</h1>
+        </header>
+        <main class="dashboard-main">
+            <div class="card" id="stefanny">
+                <h2>Stefanny</h2>
+                <p>Total Sales: <span class="sales" id="sales-stefanny">0</span></p>
+            </div>
+            <div class="card" id="kauana">
+                <h2>Kauana</h2>
+                <p>Total Sales: <span class="sales" id="sales-kauana">0</span></p>
+            </div>
+            <div class="card" id="hedipo">
+                <h2>Hédipo</h2>
+                <p>Total Sales: <span class="sales" id="sales-hedipo">0</span></p>
+            </div>
+            <div class="card" id="renan">
+                <h2>Renan</h2>
+                <p>Total Sales: <span class="sales" id="sales-renan">0</span></p>
+            </div>
+            <div class="chart-container">
+                <canvas id="sales-chart"></canvas>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

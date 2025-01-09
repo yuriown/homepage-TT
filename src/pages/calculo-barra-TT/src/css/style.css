@@ -1,0 +1,131 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #f5f5f5;
+}
+
+.main {
+    background-color: #fff;
+    width: 500px;
+    height: 400px;
+    border-radius: 25px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.back-button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+section {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+section::before {
+    background-image: url(../img/logo-TT.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    opacity: 0.1;
+    z-index: -1;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.calculator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 80%;
+}
+
+.calculator h1 {
+    margin: 20px;
+    font-weight: 600;
+    color: #1e1e1e;
+}
+
+.calculator p {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.main .calculator input {
+    border-radius: 15px;
+    padding: 10px;
+    background-color: #d6d6d6;
+    color: #333;
+    border: 1px solid #333;
+    width: 100%;
+    font-size: 16px;
+    justify-content: center;
+    text-align: center;
+}
+
+.main .calculator input::placeholder {
+    color: #303030;
+}
+
+.main .calculator button {
+    margin-top: 15px;
+    padding: 10px;
+    width: 60%;
+    border-radius: 15px;
+    background-color: #007BFF;
+    color: #f5f5f5;
+    border: 1px solid #333;
+    font-weight: 600;
+    font-size: 16px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.main .calculator button:hover {
+    background-color: #f5f5f5;
+    color: #007BFF;
+    cursor: pointer;
+}
+
+.main .calculator .result {
+    text-align: center;
+    font-weight: 600;
+    color: #1e1e1e;
+    line-height: 30px;
+    margin-top: 20px;
+}
+
+.main .calculator .result .result-data {
+    font-size: 20px;
+    line-height: 40px;
+}
+
+footer{
+    color: #007BFF;;
+}
+
+footer p a{
+    color: #000000;
+    transition: 0.3s ease-in;
+}
+
+footer p a:hover{
+    color: hsl(253, 100%, 50%);
+    transition: 0s ease-in;
+    font-weight: bold;
+}

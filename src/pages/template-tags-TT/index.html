@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Leads</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <form id="tagForm">
+            <h1>Template Leads</h1>
+            <div class="input-group">
+                <label for="malha">Número de Tags de Malha:</label>
+                <input type="number" id="malha" name="malha" min="0" required>
+                <label for="malhaCadastros">Cadastros:</label>
+                <input type="number" id="malhaCadastros" name="malhaCadastros" min="0" required>
+            </div>
+
+            <div class="input-group">
+                <label for="termo">Número de Tags de Termo:</label>
+                <input type="number" id="termo" name="termo" min="0" required>
+                <label for="termoCadastros">Cadastros:</label>
+                <input type="number" id="termoCadastros" name="termoCadastros" min="0" required>
+            </div>
+
+            <div class="input-group">
+                <label for="abracadeiras">Número de Abraçadeiras:</label>
+                <input type="number" id="abracadeiras" name="abracadeiras" min="0" required>
+                <label for="abracadeirasCadastros">Cadastros:</label>
+                <input type="number" id="abracadeirasCadastros" name="abracadeirasCadastros" min="0" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="gads">Número de Click do Gads:</label>
+                <input type="number" id="gads" name="gads" min="0" required>
+                <label for="gadsCadastros">Cadastros:</label>
+                <input type="number" id="gadsCadastros" name="gadsCadastros" min="0" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="campanha">Número de Campanhas:</label>
+                <input type="number" id="campanha" name="campanha" min="0" required>
+                <label for="campanhaCadastros">Cadastros:</label>
+                <input type="number" id="campanhaCadastros" name="campanhaCadastros" min="0" required>
+            </div>
+
+            <button type="submit">Gerar Template de Tags</button>
+        </form>
+        <footer>
+            <p>Designed and Developed by <a href="https://github.com/yuriown" target="_blank">@yuriowns</a>.</p>
+        </footer>
+
+        <div id="output" class="hidden"></div>
+        <div id="feedback">Texto copiado para a área de transferência!</div>
+    </div>
+    
+
+    <script src="script.js"></script>
+</body>
+</html>

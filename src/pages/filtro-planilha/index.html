@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filtrar e Dividir Planilha</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <h1>Filtrar e Dividir Planilha</h1>
+    <input type="file" id="upload" />
+    <button id="download">Baixar Planilha Processada</button>
+
+    <script>
+        document.getElementById('upload').addEventListener('change', handleFile);
+        document.getElementById('download').addEventListener('click', downloadProcessedFile);
+    
+        let processedWorkbook;
+    
+        function handleFile(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+    
+            reader.onload = function (e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+    
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+    
+                // Filtrar as colunas A, F, H, Q, S
+                const filteredData = jsonData.map(row => [
+                    row[0],
+                    row[5],
+                    row[7],
+                    row[16],
+                    row[18]
+                ]);
+    
+                // Remover linhas vazias
+                const cleanedData = filteredData.filter(row => row.some(cell => cell !== undefined));
+    
+                // Remover linhas duplicadas
+                const uniqueData = [];
+                const uniqueSet = new Set();
+                cleanedData.forEach(row => {
+                    const rowString = JSON.stringify(row); // Serializa para verificar duplicatas
+                    if (!uniqueSet.has(rowString)) {
+                        uniqueSet.add(rowString);
+                        uniqueData.push(row);
+                    }
+                });
+    
+                // Dividir as linhas entre os vendedores
+                const vendedores = ["Stefanny", "Kauana", "Renan", "Hédipo", "Mariana", "João", "Cristina", "Nicoly", "Camila"];
+                const rowsPerVendedor = Math.ceil(uniqueData.length / vendedores.length);
+                let vendedorIndex = 0;
+    
+                const finalData = uniqueData.map((row, index) => {
+                    if (index % rowsPerVendedor === 0 && vendedorIndex < vendedores.length) {
+                        vendedorIndex++;
+                    }
+                    return [...row, vendedores[vendedorIndex - 1]];
+                });
+    
+                // Adicionar cabeçalho
+                finalData.unshift(["Coluna A", "Coluna F", "Coluna H", "Coluna Q", "Coluna S", "Vendedor"]);
+    
+                // Criar nova planilha
+                processedWorkbook = XLSX.utils.book_new();
+                const newWorksheet = XLSX.utils.aoa_to_sheet(finalData);
+                XLSX.utils.book_append_sheet(processedWorkbook, newWorksheet, 'Filtrado e Dividido');
+            };
+    
+            reader.readAsArrayBuffer(file);
+        }
+    
+        function downloadProcessedFile() {
+            if (!processedWorkbook) {
+                alert("Por favor, carregue uma planilha primeiro.");
+                return;
+            }
+            XLSX.writeFile(processedWorkbook, 'planilha_filtrada.xlsx');
+        }
+    </script>
+    
+</body>
+</html>

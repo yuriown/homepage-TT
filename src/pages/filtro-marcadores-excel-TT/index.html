@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filtro de Marcadores - Propostas não Aprovadas</title>
+    <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>Filtro de Marcadores - Propostas não Aprovadas</h1>
+            <form id="excelForm">
+                <label for="raw-excel">Arquivo Excel Bruto:</label>
+                <input type="file" id="raw-excel" name="raw-excel" required>
+                
+                <label for="modified-excel">Excel Modificado:</label>
+                <input type="text" id="modified-excel" name="modified-excel" placeholder="Digite aqui o nome do excel modificado." required>
+                
+                <button type="submit">Enviar</button>
+            </form>
+            <footer>
+                Designed and Developed by @yuriowns
+            </footer>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.3.0/dist/exceljs.min.js"></script>
+    <script src="macro-propostas.js"></script>
+</body>
+</html>

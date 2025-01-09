@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Template</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Gerador de Template - TT</h1>
+
+        <label for="nome">Digite seu nome:</label>
+        <input type="text" id="nome" placeholder="Seu nome">
+
+        <label for="setor">Selecione os setores:</label>
+        <select id="setor" multiple size="3" onchange="mostrarOpcoes()">
+            <option value="COMERCIAL">Setor Comercial</option>
+            <option value="FISCAL">Setor Fiscal</option>
+            <option value="COMERCIAL_FISCAL">Setor Comercial + Fiscal</option>
+        </select>
+
+        <div id="opcoesAdicionais" class="hidden">
+            <label for="opcoes">Selecione as frases:</label>
+            <select id="opcoes" multiple></select>
+
+            <div id="inputEmails"></div>
+            <div id="inputEntrega"></div>
+            <div id="inputHorario"></div>
+        </div>
+
+        <button id="gerarTexto" onclick="gerarTexto()">Gerar Template</button>
+
+        <pre id="resultado" class="hidden"></pre>
+        <div id="mensagemCopia" class="hidden"></div>
+    </div>
+
+    <footer>
+        <p>Designed and Developed by <a href="https://github.com/yuriown" target="_blank" class="footer-link">@yuriowns</a></p>
+    </footer>    
+
+    <script src="script.js"></script>
+</body>
+
+</html>
