@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparador de Planilhas</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+        input { margin: 10px; }
+        button { padding: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h2>Comparador de Planilhas Excel</h2>
+    <input type="file" id="file1" accept=".xlsx">
+    <input type="file" id="file2" accept=".xlsx">
+    <button onclick="compararPlanilhas()">Comparar e Gerar Nova Planilha</button>
+
+    <script>
+        function compararPlanilhas() {
+            let file1 = document.getElementById('file1').files[0];
+            let file2 = document.getElementById('file2').files[0];
+
+            if (!file1 || !file2) {
+                alert("Selecione ambas as planilhas!");
+                return;
+            }
+
+            let reader1 = new FileReader();
+            let reader2 = new FileReader();
+
+            reader1.onload = function(e) {
+                let data1 = new Uint8Array(e.target.result);
+                let workbook1 = XLSX.read(data1, { type: 'array' });
+                let sheet1 = workbook1.Sheets[workbook1.SheetNames[0]];
+                let json1 = XLSX.utils.sheet_to_json(sheet1, { header: 1 });
+
+                reader2.onload = function(e) {
+                    let data2 = new Uint8Array(e.target.result);
+                    let workbook2 = XLSX.read(data2, { type: 'array' });
+                    let sheet2 = workbook2.Sheets[workbook2.SheetNames[0]];
+                    let json2 = XLSX.utils.sheet_to_json(sheet2, { header: 1 });
+
+                    processarDiferencas(json1, json2);
+                };
+
+                reader2.readAsArrayBuffer(file2);
+            };
+
+            reader1.readAsArrayBuffer(file1);
+        }
+
+        function processarDiferencas(json1, json2) {
+            if (json1.length === 0 || json2.length === 0) {
+                alert("Uma ou ambas as planilhas estão vazias!");
+                return;
+            }
+
+            let cabecalho = json1[0]; // Mantém o cabeçalho original
+
+            // Criar um conjunto (Set) com os valores da coluna C da Planilha 2
+            let colunaC2 = new Set(json2.slice(1).map(row => row[2])); // Coluna C da Planilha 2
+
+            // Filtrar apenas as linhas da Planilha 1 onde a Coluna C NÃO existe na Planilha 2
+            let diferentes = json1.filter((row, index) => index === 0 || (row[2] && !colunaC2.has(row[2])));
+
+            if (diferentes.length <= 1) {
+                alert("Nenhuma diferença encontrada na Coluna C.");
+                return;
+            }
+
+            let ws = XLSX.utils.aoa_to_sheet(diferentes);
+            let wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Diferencas");
+
+            XLSX.writeFile(wb, "Diferencas.xlsx");
+        }
+    </script>
+
+</body>
+</html>

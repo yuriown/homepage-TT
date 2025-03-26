@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparar Arquivos Excel</title>
+</head>
+<body>
+  <h1>Comparar Arquivos Excel</h1>
+  <p>Envie dois arquivos Excel para encontrar valores iguais:</p>
+  
+  <input type="file" id="file1" accept=".xlsx, .xls">
+  <input type="file" id="file2" accept=".xlsx, .xls">
+  <button id="compareBtn">Comparar</button>
+  
+  <h2>Resultados:</h2>
+  <pre id="results"></pre>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparar Planilhas</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        input { margin: 10px; }
+        button { padding: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Comparar Coluna C de Duas Planilhas</h2>
+    <input type="file" id="file1" accept=".xlsx,.xls">
+    <input type="file" id="file2" accept=".xlsx,.xls">
+    <button onclick="processFiles()">Comparar e Gerar Nova Planilha</button>
+    <script>
+        function processFiles() {
+            const file1 = document.getElementById('file1').files[0];
+            const file2 = document.getElementById('file2').files[0];
+            if (!file1 || !file2) {
+                alert('Selecione os dois arquivos Excel.');
+                return;
+            }
+            
+            Promise.all([readExcel(file1), readExcel(file2)]).then(([data1, data2]) => {
+                const colC1 = new Set(data1.map(row => row[2]));
+                const filteredData2 = data2.filter(row => !colC1.has(row[2]));
+                generateExcel(filteredData2);
+            });
+        }
+
+        function readExcel(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+                    resolve(json);
+                };
+                reader.onerror = reject;
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        function generateExcel(data) {
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Resultado");
+            XLSX.writeFile(wb, "planilha_filtrada.xlsx");
+        }
+    </script>
+</body>
+</html>

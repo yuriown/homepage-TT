@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processador de Planilha</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <h2>Selecionar Planilha</h2>
+    <input type="file" id="fileInput" accept=".xlsx, .xls">
+    <button onclick="processarArquivo()">Processar</button>
+
+    <script>
+        function processarArquivo() {
+            const fileInput = document.getElementById("fileInput").files[0];
+
+            if (!fileInput) {
+                alert("Por favor, selecione um arquivo.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: "array" });
+                const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+                if (jsonData.length === 0) {
+                    alert("A planilha está vazia.");
+                    return;
+                }
+
+                const headers = jsonData[0]; // Captura o cabeçalho
+                const dados = jsonData.slice(1); // Remove cabeçalhos
+
+                let agrupados = {}; // Objeto para agrupar os dados
+
+                // Processa os dados agrupando pela coluna C (índice 2)
+                dados.forEach(linha => {
+                    const valorC = linha[2]; // Valor da coluna C
+                    const valorA = parseFloat(linha[0]) || 0; // Valor da coluna A (convertido para número)
+
+                    if (valorC !== undefined) {
+                        if (!agrupados[valorC]) {
+                            agrupados[valorC] = { somaA: 0, linhaBase: linha };
+                        }
+                        agrupados[valorC].somaA += valorA;
+                    }
+                });
+
+                // Monta os dados da nova planilha
+                const resultado = [headers]; // Adiciona o cabeçalho
+                Object.values(agrupados).forEach(({ somaA, linhaBase }) => {
+                    let novaLinha = [...linhaBase]; // Copia a linha original
+                    novaLinha[0] = somaA; // Substitui o valor da coluna A pela soma calculada
+                    resultado.push(novaLinha);
+                });
+
+                // Criar nova planilha e salvar
+                const novoSheet = XLSX.utils.aoa_to_sheet(resultado);
+                const novoWorkbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(novoWorkbook, novoSheet, "Resultado");
+                XLSX.writeFile(novoWorkbook, "resultado.xlsx");
+            };
+
+            reader.readAsArrayBuffer(fileInput);
+        }
+    </script>
+</body>
+</html>

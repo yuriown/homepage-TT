@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparar Planilhas</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        input, button {
+            margin: 10px;
+            padding: 8px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Comparar duas planilhas Excel</h2>
+
+    <label>Selecione a primeira planilha:</label>
+    <input type="file" id="file1" accept=".xlsx, .xls"><br>
+
+    <label>Selecione a segunda planilha:</label>
+    <input type="file" id="file2" accept=".xlsx, .xls"><br>
+
+    <button onclick="compararPlanilhas()">Comparar e Atualizar</button>
+    <button id="download" style="display: none;" onclick="baixarArquivo()">Baixar Segunda Planilha Atualizada</button>
+
+    <script>
+        let segundaPlanilhaAtualizada; // Para armazenar a planilha modificada
+
+        function compararPlanilhas() {
+            const file1 = document.getElementById('file1').files[0];
+            const file2 = document.getElementById('file2').files[0];
+
+            if (!file1 || !file2) {
+                alert("Por favor, selecione as duas planilhas.");
+                return;
+            }
+
+            const leitor1 = new FileReader();
+            const leitor2 = new FileReader();
+
+            leitor1.onload = function(e) {
+                const dados1 = new Uint8Array(e.target.result);
+                const workbook1 = XLSX.read(dados1, { type: 'array' });
+                const sheet1 = workbook1.Sheets[workbook1.SheetNames[0]];
+                const data1 = XLSX.utils.sheet_to_json(sheet1, { header: 1 });
+
+                leitor2.onload = function(e) {
+                    const dados2 = new Uint8Array(e.target.result);
+                    const workbook2 = XLSX.read(dados2, { type: 'array' });
+                    const sheet2 = workbook2.Sheets[workbook2.SheetNames[0]];
+                    const data2 = XLSX.utils.sheet_to_json(sheet2, { header: 1 });
+
+                    let map = new Map();
+
+                    // Mapeia os valores da coluna C da primeira planilha para a coluna B
+                    for (let i = 1; i < data1.length; i++) {
+                        let valorC = data1[i][2]; // Coluna C (índice 2)
+                        let valorB = data1[i][1]; // Coluna B (índice 1)
+                        if (valorC !== undefined && valorB !== undefined) {
+                            map.set(valorC.toString(), valorB);
+                        }
+                    }
+
+                    // Percorre a segunda planilha e atualiza a coluna F
+                    for (let j = 1; j < data2.length; j++) {
+                        let valorC2 = data2[j][2]; // Coluna C (índice 2)
+                        if (valorC2 !== undefined && map.has(valorC2.toString())) {
+                            data2[j][5] = map.get(valorC2.toString()); // Coluna F (índice 5)
+                        }
+                    }
+
+                    // Converte os dados modificados de volta para uma planilha
+                    segundaPlanilhaAtualizada = XLSX.utils.book_new();
+                    let novaSheet = XLSX.utils.aoa_to_sheet(data2);
+                    XLSX.utils.book_append_sheet(segundaPlanilhaAtualizada, novaSheet, "Atualizado");
+
+                    document.getElementById('download').style.display = "inline"; // Mostra o botão de download
+                    alert("Comparação concluída! Agora você pode baixar a planilha atualizada.");
+                };
+
+                leitor2.readAsArrayBuffer(file2);
+            };
+
+            leitor1.readAsArrayBuffer(file1);
+        }
+
+        function baixarArquivo() {
+            if (segundaPlanilhaAtualizada) {
+                XLSX.writeFile(segundaPlanilhaAtualizada, "planilha_atualizada.xlsx");
+            }
+        }
+    </script>
+
+</body>
+</html>

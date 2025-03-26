@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparar Planilhas XLS</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        input { margin: 10px; }
+        button { padding: 10px 15px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h2>Comparar Coluna C de Duas Planilhas</h2>
+
+    <input type="file" id="file1" accept=".xls,.xlsx">
+    <input type="file" id="file2" accept=".xls,.xlsx">
+    <button onclick="compararPlanilhas()">Comparar e Gerar XLS</button>
+
+    <script>
+        function compararPlanilhas() {
+            let file1 = document.getElementById("file1").files[0];
+            let file2 = document.getElementById("file2").files[0];
+
+            if (!file1 || !file2) {
+                alert("Selecione as duas planilhas.");
+                return;
+            }
+
+            let reader1 = new FileReader();
+            let reader2 = new FileReader();
+
+            reader1.readAsBinaryString(file1);
+            reader2.readAsBinaryString(file2);
+
+            reader1.onload = function(e) {
+                let data1 = e.target.result;
+                let wb1 = XLSX.read(data1, { type: "binary" });
+                let sheet1 = wb1.Sheets[wb1.SheetNames[0]];
+                let json1 = XLSX.utils.sheet_to_json(sheet1, { header: 1 });
+
+                reader2.onload = function(e) {
+                    let data2 = e.target.result;
+                    let wb2 = XLSX.read(data2, { type: "binary" });
+                    let sheet2 = wb2.Sheets[wb2.SheetNames[0]];
+                    let json2 = XLSX.utils.sheet_to_json(sheet2, { header: 1 });
+
+                    processarComparacao(json1, json2);
+                };
+            };
+        }
+
+        function processarComparacao(json1, json2) {
+            let set1 = new Set(json1.map(row => row[2])); // Coluna C da Planilha 1
+            let set2 = new Set(json2.map(row => row[2])); // Coluna C da Planilha 2
+
+            let resultado = [];
+
+            // Processar os dados da Planilha 1
+            json1.forEach(row => {
+                let valorC = row[2]; // Coluna C
+                let novaLinha = [...row]; // Copia a linha original
+
+                if (set1.has(valorC) && set2.has(valorC)) {
+                    novaLinha[7] = "Janeiro/Fevereiro"; // Coluna H
+                } else if (set1.has(valorC)) {
+                    novaLinha[7] = "Janeiro";
+                }
+
+                resultado.push(novaLinha);
+            });
+
+            // Processar os dados da Planilha 2 que não estão na Planilha 1
+            json2.forEach(row => {
+                let valorC = row[2]; // Coluna C
+
+                if (!set1.has(valorC)) { // Se não estiver na Planilha 1
+                    let novaLinha = [...row]; // Copia a linha original
+                    novaLinha[7] = "Fevereiro"; // Coluna H
+                    resultado.push(novaLinha);
+                }
+            });
+
+            gerarExcel(resultado);
+        }
+
+        function gerarExcel(dados) {
+            let ws = XLSX.utils.aoa_to_sheet(dados);
+            let wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Resultado");
+
+            XLSX.writeFile(wb, "Resultado_Comparacao.xlsx");
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparar Planilhas</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        input { margin: 10px; }
+        button { padding: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Comparar Planilhas Excel</h2>
+    <input type="file" id="file1" accept=".xlsx,.xls">
+    <input type="file" id="file2" accept=".xlsx,.xls">
+    <button onclick="processFiles()">Comparar</button>
+    <a id="downloadLink" style="display:none; margin-top: 20px;" download="planilha_atualizada.xlsx">Baixar Planilha Atualizada</a>
+
+    <script>
+        function processFiles() {
+            const file1 = document.getElementById('file1').files[0];
+            const file2 = document.getElementById('file2').files[0];
+            
+            if (!file1 || !file2) {
+                alert("Selecione ambas as planilhas");
+                return;
+            }
+
+            const reader1 = new FileReader();
+            const reader2 = new FileReader();
+
+            reader1.onload = function(e) {
+                const data1 = new Uint8Array(e.target.result);
+                const workbook1 = XLSX.read(data1, { type: 'array' });
+                const sheet1 = XLSX.utils.sheet_to_json(workbook1.Sheets[workbook1.SheetNames[0]], { header: 1 });
+                
+                reader2.onload = function(e) {
+                    const data2 = new Uint8Array(e.target.result);
+                    const workbook2 = XLSX.read(data2, { type: 'array' });
+                    const sheet2 = XLSX.utils.sheet_to_json(workbook2.Sheets[workbook2.SheetNames[0]], { header: 1 });
+                    
+                    compareSheets(sheet1, sheet2);
+                };
+                reader2.readAsArrayBuffer(file2);
+            };
+            reader1.readAsArrayBuffer(file1);
+        }
+
+        function compareSheets(sheet1, sheet2) {
+            const map = new Map();
+            
+            // Criando um mapa com os valores da Coluna C como chave e Coluna A como valor
+            sheet2.forEach(row => {
+                if (row[2] !== undefined && row[0] !== undefined) { // Garantir que existem dados
+                    map.set(row[2].toString().trim(), row[0]); 
+                }
+            });
+
+            // Percorrendo a primeira planilha e preenchendo a coluna H
+            sheet1.forEach((row, index) => {
+                if (index > 0 && row[2] !== undefined) { // Pular cabeçalho
+                    const key = row[2].toString().trim();
+                    if (map.has(key)) {
+                        row[7] = map.get(key); // Preencher a coluna H (índice 7)
+                    }
+                }
+            });
+
+            // Criar um novo arquivo atualizado
+            const newSheet = XLSX.utils.aoa_to_sheet(sheet1);
+            const newWorkbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(newWorkbook, newSheet, "Atualizado");
+            
+            const wbout = XLSX.write(newWorkbook, { bookType: 'xlsx', type: 'array' });
+            const blob = new Blob([wbout], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+            
+            const link = document.getElementById('downloadLink');
+            link.href = URL.createObjectURL(blob);
+            link.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

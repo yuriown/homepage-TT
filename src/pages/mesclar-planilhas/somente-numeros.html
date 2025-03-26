@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processar Planilha</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        input, button { margin: 10px; }
+        pre { text-align: left; background: #f4f4f4; padding: 10px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <h2>Selecionar Planilha</h2>
+    <input type="file" id="fileInput" accept=".xlsx, .xls">
+    <button id="download">Baixar Planilha Modificada</button>
+    <h3>Resultados:</h3>
+    <pre id="output"></pre>
+    
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                
+                let result = [];
+                for (let i = 1; i < jsonData.length; i++) {
+                    if (jsonData[i][2]) { // Coluna C (index 2)
+                        jsonData[i][2] = jsonData[i][2].toString().replace(/\D/g, '');
+                        result.push(jsonData[i][2]);
+                    }
+                }
+                
+                document.getElementById('output').textContent = result.join('\n');
+                
+                // Atualiza a planilha
+                const newWorksheet = XLSX.utils.aoa_to_sheet(jsonData);
+                workbook.Sheets[sheetName] = newWorksheet;
+                
+                document.getElementById('download').onclick = function() {
+                    const newWorkbook = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, sheetName);
+                    XLSX.writeFile(newWorkbook, 'Planilha_Modificada.xlsx');
+                };
+            };
+            reader.readAsArrayBuffer(file);
+        });
+    </script>
+</body>
+</html>

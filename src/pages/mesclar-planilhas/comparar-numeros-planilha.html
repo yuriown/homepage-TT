@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparar Planilhas</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <h2>Comparar Planilhas - Coluna C</h2>
+    <input type="file" id="file1" />
+    <input type="file" id="file2" />
+    <button onclick="compareSheets()">Comparar</button>
+    <button onclick="downloadResult()" style="display:none" id="downloadBtn">Baixar Resultado</button>
+    <script>
+        let resultData = [];
+
+        function readExcel(file, callback) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const data = new Uint8Array(event.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+                callback(jsonData);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function compareSheets() {
+            const file1 = document.getElementById("file1").files[0];
+            const file2 = document.getElementById("file2").files[0];
+            
+            if (!file1 || !file2) {
+                alert("Por favor, selecione ambas as planilhas.");
+                return;
+            }
+            
+            readExcel(file1, (data1) => {
+                readExcel(file2, (data2) => {
+                    const setColC1 = new Set(data1.map(row => row[2])); // Coluna C (índice 2)
+                    resultData = data2.filter(row => setColC1.has(row[2]));
+                    
+                    if (resultData.length > 0) {
+                        document.getElementById("downloadBtn").style.display = "block";
+                        alert("Comparação concluída! Clique em 'Baixar Resultado'.");
+                    } else {
+                        alert("Nenhuma correspondência encontrada.");
+                    }
+                });
+            });
+        }
+        
+        function downloadResult() {
+            const ws = XLSX.utils.aoa_to_sheet(resultData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Resultados");
+            XLSX.writeFile(wb, "resultado.xlsx");
+        }
+    </script>
+</body>
+</html>
